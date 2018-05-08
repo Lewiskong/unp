@@ -30,3 +30,12 @@
 *.exe
 *.out
 *.app
+
+# ide files
+.vscode
+
+# dependency
+unpv13e
+
+# MacOS System Files
+*.DS_Store
