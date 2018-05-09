@@ -33,6 +33,9 @@ echoserver : echoserver.o
 echoclient : echoclient.o
 	$(GCC) $(FLAGS) $(INCLUDE) -o $@$(EXE_SUFFIX) $^ $(LIBS)
 
+clitest : cli_test.o
+	$(GCC) $(FLAGS) $(INCLUDE) -o $@$(EXE_SUFFIX) $^ $(LIBS)
+
 echo : echoclient echoserver
 
 ## 文件清理 make clean

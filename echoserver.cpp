@@ -2,6 +2,7 @@
 #include <iostream>
 
 void strecho(int connfd);
+void sig_chld(int signo);
 
 int main(int argc,char **args)
 {
@@ -17,7 +18,9 @@ int main(int argc,char **args)
     servaddr.sin_port=htons(SERV_PORT);
     Bind(listenfd,(SA*)&servaddr,sizeof(servaddr));
 
+    // process child process fin signal to close time_wait
     Listen(listenfd,LISTENQ);
+    Signal(SIGCHLD,sig_chld);
 
     for ( ; ; )
     {
@@ -28,6 +31,7 @@ int main(int argc,char **args)
         {
             Close(listenfd);
             strecho(connfd);
+            Close(connfd);
             exit(0);
         }
         Close(connfd);
@@ -48,10 +52,22 @@ again:
         // n=strlen(buf);
         Write(connfd,buf,n);
     }
+    // 处理系统调用被中断
     if (n<0 && errno==EINTR)
         goto again;
     else if (n<0)
         err_sys("strecho: read error");
 }
 
+void sig_chld(int signo)
+{
+    pid_t pid;
+    int stat;
 
+    // while ((pid=waitpid(-1,&stat,WNOHANG))>0) 
+    // {
+    //     std::cout<<"child process "<<pid<<" terminated"<<std::endl;
+    // }
+
+    return ;
+}
