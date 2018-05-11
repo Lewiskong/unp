@@ -9,7 +9,7 @@ EXE_SUFFIX = .out
 OUTPUT = client$(EXE_SUFFIX) server$(EXE_SUFFIX) test$(EXE_SUFFIX) echoclient$(EXE_SUFFIX) echoserver$(EXE_SUFFIX) main$(EXE_SUFFIX)
 
 .cpp.o :
-	$(GCC) $(FLAGS) $(INCLUDE) -c $< $(LIBS)
+	$(GCC) $(FLAGS) $(INCLUDE) -o $@ -c $< $(LIBS)
 
 main: main.o
 	$(GCC) $(FLAGS) $(INCLUDE) -o $@$(EXE_SUFFIX) $^ $(LIBS)
@@ -41,3 +41,12 @@ echo : echoclient echoserver
 ## 文件清理 make clean
 clean :
 	rm *.o $(OUTPUT);rm -R main.dSym
+
+
+## IM_SELECT 文件编译
+im: imserver imclient
+
+imserver: im_select/im_server.o
+	$(GCC) $(FLAGS) $(INCLUDE) -o $@$(EXE_SUFFIX) $^ $(LIBS)
+
+imclient: im_select/im_client.o
