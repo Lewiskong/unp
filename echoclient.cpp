@@ -14,7 +14,7 @@ int main(int argc,char **argv)
     sockfd=Socket(AF_INET,SOCK_STREAM,0);
     bzero(&servaddr,sizeof(servaddr));
     servaddr.sin_family=AF_INET;
-    servaddr.sin_port=htons(SERV_PORT);
+    servaddr.sin_port=htons(8888);
     Inet_pton(AF_INET,argv[1],&servaddr.sin_addr);
 
     Connect(sockfd,(SA*)&servaddr,sizeof(servaddr));
@@ -55,13 +55,14 @@ void strcli_select(FILE *fp,int sockfd)
                 return ;
             Writen(sockfd,sendline,strlen(sendline));
         }
-
+        
         if (FD_ISSET(sockfd,&rset))
         {
             if (Readline(sockfd,recvline,MAXLINE)==0)
                 err_quit("str_cli:server terminated prematurely");
-            // Fputs(recvline,stdout);
-            std::cout<<recvline<<std::endl;
+            std::cout<<"receive msg : ";
+            Fputs(recvline,stdout);
+            // std::cout<<recvline<<std::endl;
         }
 
     }

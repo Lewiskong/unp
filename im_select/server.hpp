@@ -1,7 +1,9 @@
 #include <map>
+#include <functional>
 #include "unp.h"
 
-typedef void (*Handler)(int connfd);
+// typedef void (*Handler)(int connfd);
+typedef std::function<void(int)> Handler;
 
 // 点对点服务器（最多接收一个连接）
 class Server
@@ -15,15 +17,19 @@ class Server
     void Listen(int port);
     void Register(int fd, Handler handler);
     void Run();
+    int getPeerFd();
 
   private:
     void process(int connfd);
 
   private:
     int listenfd;
+    int sockfd;
     sockaddr_in servaddr;
     std::map<int, Handler> handlers;
 };
+
+const int Server::CONN_FD;
 
 Server Server::New()
 {
@@ -58,6 +64,7 @@ void Server::Run()
     {
         socklen_t clilen = sizeof(cliaddr);
         auto connfd = Accept(listenfd, (SA *)&cliaddr, &clilen);
+        sockfd = connfd;
         process(connfd);
         Close(connfd);
     }
@@ -93,10 +100,17 @@ void Server::process(int fd)
         for (int index = 0; index < maxfd; index++)
         {
             // index设备可读，处理对应事件
+            if (index == fd)
+                continue;
             if (FD_ISSET(index, &rset))
             {
                 handlers.find(index)->second(index);
             }
         }
     }
+}
+
+int Server::getPeerFd()
+{
+    return sockfd;
 }
