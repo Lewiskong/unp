@@ -7,12 +7,10 @@ LIBS = -lresolv -lpthread -L./unpv13e/ -lunp
 EXE_SUFFIX = .out
 
 OUTPUT = client$(EXE_SUFFIX) server$(EXE_SUFFIX) test$(EXE_SUFFIX) echoclient$(EXE_SUFFIX) echoserver$(EXE_SUFFIX) main$(EXE_SUFFIX)
-OUTPUT+= im_server$(EXE_SUFFIX) im_client$(EXE_SUFFIX) clitest$(EXE_SUFFIX)
+OUTPUT+= imserver$(EXE_SUFFIX) imclient$(EXE_SUFFIX) clitest$(EXE_SUFFIX)
 
 .cpp.o :
 	$(GCC) $(FLAGS) $(INCLUDE) -o $@ -c $< $(LIBS)
-.hpp.o :
-	$(GCC) -x c++ $(FLAGS) $(INCLUDE) -o $@ -c $< $(LIBS)
 
 main: main.o
 	$(GCC) $(FLAGS) $(INCLUDE) -o $@$(EXE_SUFFIX) $^ $(LIBS)
